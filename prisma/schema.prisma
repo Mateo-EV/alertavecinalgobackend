@@ -24,11 +24,11 @@ model User {
   password          String
   registration_date DateTime @default(now())
 
-  chats              UserChat[]
+  // chats              UserChat[]
   incidents          Incident[]
   notifications      NotificationHistory[]
-  ChatMessage        ChatMessage[]
-  Chat               Chat[]
+  groupMessage       GroupMessage[]
+  // Chat               Chat[]
   NotificationConfig NotificationConfig[]
   groupUsers         GroupUser[]
 }
@@ -41,8 +41,8 @@ model Alert {
   location_lat Float
   location_lon Float
   status       String
-  chat_id      String?
-  chat         Chat?    @relation(fields: [chat_id], references: [id])
+  // chat_id      String?
+  // chat         Chat?    @relation(fields: [chat_id], references: [id])
   group_id     String?
   group        Group?   @relation("GroupAlerts", fields: [group_id], references: [id])
   multimedia   String?
@@ -56,7 +56,7 @@ model Group {
   private       Boolean     @default(true)
   code          String      @unique
   groupUsers    GroupUser[]
-  chats         Chat[]      @relation("GroupChats")
+  // chats         Chat[]      @relation("GroupChats")
   alerts        Alert[]     @relation("GroupAlerts")
 }
 
@@ -70,40 +70,40 @@ model GroupUser {
   @@id([user_id, group_id])
 }
 
-model ChatMessage {
+model GroupMessage {
   id        String   @id @default(cuid())
-  chat_id   String
+  // chat_id   String
   user_id   String
   content   String
   timestamp DateTime @default(now())
   user      User     @relation(fields: [user_id], references: [id])
-  chat      Chat     @relation(fields: [chat_id], references: [id])
+  // chat      Chat     @relation(fields: [chat_id], references: [id])
 }
 
-model Chat {
-  id            String        @id @default(cuid())
-  chat_name     String
-  description   String?
-  creation_date DateTime      @default(now())
-  image         String?
-  user_id       String
-  user          User          @relation(fields: [user_id], references: [id])
-  messages      ChatMessage[]
-  userChats     UserChat[]
-  Alert         Alert[]
-  group_id      String?
-  group         Group?        @relation("GroupChats", fields: [group_id], references: [id])
-}
+// model Chat {
+//   id            String        @id @default(cuid())
+//   chat_name     String
+//   description   String?
+//   creation_date DateTime      @default(now())
+//   image         String?
+//   user_id       String
+//   user          User          @relation(fields: [user_id], references: [id])
+//   messages      ChatMessage[]
+//   userChats     UserChat[]
+//   Alert         Alert[]
+//   group_id      String?
+//   group         Group?        @relation("GroupChats", fields: [group_id], references: [id])
+// }
 
-model UserChat {
-  user_id   String
-  chat_id   String
-  join_date DateTime @default(now())
-  user      User     @relation(fields: [user_id], references: [id])
-  chat      Chat     @relation(fields: [chat_id], references: [id])
+// model UserChat {
+//   user_id   String
+//   chat_id   String
+//   join_date DateTime @default(now())
+//   user      User     @relation(fields: [user_id], references: [id])
+//   chat      Chat     @relation(fields: [chat_id], references: [id])
 
-  @@id([user_id, chat_id])
-}
+//   @@id([user_id, chat_id])
+// }
 
 model ServiceContact {
   id           String @id @default(cuid())
