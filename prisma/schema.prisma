@@ -30,6 +30,7 @@ model User {
   ChatMessage        ChatMessage[]
   Chat               Chat[]
   NotificationConfig NotificationConfig[]
+  groupUsers         GroupUser[]
 }
 
 model Alert {
@@ -42,6 +43,31 @@ model Alert {
   status       String
   chat_id      String?
   chat         Chat?    @relation(fields: [chat_id], references: [id])
+  group_id     String?
+  group        Group?   @relation("GroupAlerts", fields: [group_id], references: [id])
+  multimedia   String?
+}
+
+model Group {
+  id            String      @id @default(cuid())
+  name          String
+  description   String?
+  creation_date DateTime    @default(now())
+  private       Boolean     @default(true)
+  code          String      @unique
+  groupUsers    GroupUser[]
+  chats         Chat[]      @relation("GroupChats")
+  alerts        Alert[]     @relation("GroupAlerts")
+}
+
+model GroupUser {
+  user_id   String
+  group_id  String
+  join_date DateTime @default(now())
+  user      User     @relation(fields: [user_id], references: [id])
+  group     Group    @relation(fields: [group_id], references: [id])
+
+  @@id([user_id, group_id])
 }
 
 model ChatMessage {
@@ -65,6 +91,8 @@ model Chat {
   messages      ChatMessage[]
   userChats     UserChat[]
   Alert         Alert[]
+  group_id      String?
+  group         Group?        @relation("GroupChats", fields: [group_id], references: [id])
 }
 
 model UserChat {
@@ -82,6 +110,8 @@ model ServiceContact {
   service_type String
   service_name String
   phone        String
+  lat          Float
+  lon          Float
 }
 
 model News {
