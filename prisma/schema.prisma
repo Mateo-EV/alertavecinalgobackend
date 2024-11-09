@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  first_name        String
+  last_name         String
+  phone             Int
+  address           String
+  email             String   @unique
+  dni               String   @unique
+  password          String
+  registration_date DateTime @default(now())
+
+  chats              UserChat[]
+  incidents          Incident[]
+  notifications      NotificationHistory[]
+  ChatMessage        ChatMessage[]
+  Chat               Chat[]
+  NotificationConfig NotificationConfig[]
+}
+
+model Alert {
+  id           String   @id @default(cuid())
+  user_id      String
+  alert_type   String
+  timestamp    DateTime @default(now())
+  location_lat Float
+  location_lon Float
+  status       String
+  chat_id      String?
+  chat         Chat?    @relation(fields: [chat_id], references: [id])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  chat_id   String
+  user_id   String
+  content   String
+  timestamp DateTime @default(now())
+  user      User     @relation(fields: [user_id], references: [id])
+  chat      Chat     @relation(fields: [chat_id], references: [id])
+}
+
+model Chat {
+  id            String        @id @default(cuid())
+  chat_name     String
+  description   String?
+  creation_date DateTime      @default(now())
+  image         String?
+  user_id       String
+  user          User          @relation(fields: [user_id], references: [id])
+  messages      ChatMessage[]
+  userChats     UserChat[]
+  Alert         Alert[]
+}
+
+model UserChat {
+  user_id   String
+  chat_id   String
+  join_date DateTime @default(now())
+  user      User     @relation(fields: [user_id], references: [id])
+  chat      Chat     @relation(fields: [chat_id], references: [id])
+
+  @@id([user_id, chat_id])
+}
+
+model ServiceContact {
+  id           String @id @default(cuid())
+  service_type String
+  service_name String
+  phone        String
+}
+
+model News {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  timestamp DateTime @default(now())
+  category  String
+}
+
+model Incident {
+  id            String   @id @default(cuid())
+  user_id       String
+  incident_type String
+  timestamp     DateTime @default(now())
+  description   String
+  location_lat  Float
+  location_lon  Float
+  multimedia    String?
+  user          User     @relation(fields: [user_id], references: [id])
+}
+
+model NotificationHistory {
+  id                String   @id @default(cuid())
+  user_id           String
+  notification_type String
+  timestamp         DateTime @default(now())
+  user              User     @relation(fields: [user_id], references: [id])
+}
+
+model NotificationConfig {
+  id         String   @id @default(cuid())
+  user_id    String
+  alert_type String
+  start_time DateTime
+  end_time   DateTime
+  user       User     @relation(fields: [user_id], references: [id])
+}
