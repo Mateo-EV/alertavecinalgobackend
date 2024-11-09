@@ -1,15 +1,7 @@
-import {
-  Request,
-  Controller,
-  Post,
-  UnauthorizedException,
-  UseGuards,
-  Get,
-  Body
-} from "@nestjs/common"
+import { Body, Controller, Get, Post, Request, UseGuards } from "@nestjs/common"
 import { AuthService } from "./auth.service"
-import { LocalAuthGuard } from "./local-auth.guard"
 import { JwtAuthGuard } from "./jwt-auth.guard"
+import { LocalAuthGuard } from "./local-auth.guard"
 
 // DTO para el registro de usuario
 class CreateUserDto {
@@ -17,7 +9,7 @@ class CreateUserDto {
   password: string
   first_name: string
   last_name: string
-  phone: number
+  phone: string
   address: string
   email: string
 }

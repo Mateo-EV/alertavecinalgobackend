@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common"
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException
+} from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
 import * as bcrypt from "bcryptjs"
 import { db } from "src/db"
@@ -36,9 +40,13 @@ export class AuthService {
       }
     })
 
+    if (!user) {
+      throw new UnauthorizedException("Credenciales inválidas")
+    }
+
     const isCorrectPassword = await bcrypt.compare(password, user.password)
 
-    if (!user || !isCorrectPassword) {
+    if (!isCorrectPassword) {
       throw new UnauthorizedException("Credenciales inválidas")
     }
 
@@ -50,7 +58,7 @@ export class AuthService {
     dni: string,
     first_name: string,
     last_name: string,
-    phone: number,
+    phone: string,
     address: string,
     email: string,
     password: string

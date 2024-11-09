@@ -17,7 +17,7 @@ model User {
   id                String   @id @default(cuid())
   first_name        String
   last_name         String
-  phone             Int
+  phone             String
   address           String
   email             String   @unique
   dni               String   @unique
@@ -36,7 +36,7 @@ model User {
 model Alert {
   id           String   @id @default(cuid())
   user_id      String
-  alert_type   String
+  alert_type   String?
   timestamp    DateTime @default(now())
   location_lat Float
   location_lon Float
