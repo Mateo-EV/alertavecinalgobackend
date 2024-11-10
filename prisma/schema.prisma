@@ -31,6 +31,7 @@ model User {
   // Chat               Chat[]
   NotificationConfig NotificationConfig[]
   groupUsers         GroupUser[]
+  Alert              Alert[]
 }
 
 model Alert {
@@ -43,8 +44,9 @@ model Alert {
   status       String
   // chat_id      String?
   // chat         Chat?    @relation(fields: [chat_id], references: [id])
-  group_id     String?
-  group        Group?   @relation("GroupAlerts", fields: [group_id], references: [id])
+  group_id     String
+  group        Group    @relation("GroupAlerts", fields: [group_id], references: [id])
+  user         User     @relation(fields: [user_id], references: [id])
   multimedia   String?
 }
 

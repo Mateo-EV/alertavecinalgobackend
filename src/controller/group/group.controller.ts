@@ -23,7 +23,6 @@ export class GroupController {
     @Body("description") description?: string
   ) {
     const ids = [req.user.id, ...userIds]
-    console.log(ids)
 
     return this.groupService.createGroup(ids, groupName, description)
   }
@@ -44,5 +43,15 @@ export class GroupController {
   @Get(":id")
   async getGroup(@Param() params: any) {
     return this.groupService.getGroup(params.id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("message")
+  async sendMessage(
+    @Request() req,
+    @Body("content") content: string,
+    @Body("groupId") groupId: string
+  ) {
+    return this.groupService.sendMessage(req.user.id, content, groupId)
   }
 }

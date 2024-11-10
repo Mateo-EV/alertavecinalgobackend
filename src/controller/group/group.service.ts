@@ -73,9 +73,21 @@ export class GroupService {
     return await db.group.findUnique({
       where: { id: groupId },
       include: {
-        groupMessage: { include: { user: true } },
+        groupMessage: {
+          include: { user: true },
+          orderBy: { timestamp: "desc" }
+        },
+        alerts: { orderBy: { timestamp: "desc" }, include: { user: true } },
         groupUsers: { include: { user: true } }
       }
     })
+  }
+
+  async sendMessage(userId: string, content: string, group_id: string) {
+    const message = await db.groupMessage.create({
+      data: { user_id: userId, content, group_id }
+    })
+
+    return message
   }
 }
