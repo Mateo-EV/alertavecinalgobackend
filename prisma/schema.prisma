@@ -49,15 +49,16 @@ model Alert {
 }
 
 model Group {
-  id            String      @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
   description   String?
-  creation_date DateTime    @default(now())
-  private       Boolean     @default(true)
-  code          String      @unique
+  creation_date DateTime       @default(now())
+  private       Boolean        @default(true)
+  code          String         @unique
   groupUsers    GroupUser[]
   // chats         Chat[]      @relation("GroupChats")
-  alerts        Alert[]     @relation("GroupAlerts")
+  alerts        Alert[]        @relation("GroupAlerts")
+  groupMessage  GroupMessage[]
 }
 
 model GroupUser {
@@ -72,12 +73,12 @@ model GroupUser {
 
 model GroupMessage {
   id        String   @id @default(cuid())
-  // chat_id   String
+  group_id  String
   user_id   String
   content   String
   timestamp DateTime @default(now())
   user      User     @relation(fields: [user_id], references: [id])
-  // chat      Chat     @relation(fields: [chat_id], references: [id])
+  group     Group    @relation(fields: [group_id], references: [id])
 }
 
 // model Chat {
