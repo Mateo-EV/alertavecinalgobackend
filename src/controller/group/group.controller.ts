@@ -14,17 +14,21 @@ import { JwtAuthGuard } from "src/auth/jwt-auth.guard"
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
-  // Endpoint para crear un nuevo grupo
+  @UseGuards(JwtAuthGuard)
   @Post("create")
   async createGroup(
-    @Body("userId") userId: string,
+    @Request() req,
+    @Body("userIds") userIds: string[],
     @Body("groupName") groupName: string,
     @Body("description") description?: string
   ) {
-    return this.groupService.createGroup(userId, groupName, description)
+    const ids = [req.user.id, ...userIds]
+    console.log(ids)
+
+    return this.groupService.createGroup(ids, groupName, description)
   }
 
-  // Endpoint para unirse a un grupo usando el código
+  @UseGuards(JwtAuthGuard)
   @Post("join")
   async joinGroup(@Body("userId") userId: string, @Body("code") code: string) {
     return this.groupService.joinGroup(userId, code)
@@ -39,6 +43,6 @@ export class GroupController {
   @UseGuards(JwtAuthGuard)
   @Get(":id")
   async getGroup(@Param() params: any) {
-    return this.groupService.getMyGroups(params.id)
+    return this.groupService.getGroup(params.id)
   }
 }

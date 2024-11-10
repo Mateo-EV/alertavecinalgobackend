@@ -4,7 +4,11 @@ import { db } from "../../db"
 @Injectable()
 export class GroupService {
   // Método para crear un grupo
-  async createGroup(userId: string, groupName: string, description?: string) {
+  async createGroup(
+    userIds: string[],
+    groupName: string,
+    description?: string
+  ) {
     const code = crypto.randomUUID().split("-")[0] // Generar un código único para el grupo
 
     const group = await db.group.create({
@@ -13,10 +17,13 @@ export class GroupService {
         description,
         code,
         groupUsers: {
-          create: {
-            user_id: userId
-          }
+          createMany: { data: userIds.map(id => ({ user_id: id })) }
         }
+      },
+      include: {
+        groupMessage: { take: 1, orderBy: { timestamp: "desc" } },
+        alerts: { take: 1, orderBy: { timestamp: "desc" } },
+        _count: { select: { groupUsers: true } }
       }
     })
 
