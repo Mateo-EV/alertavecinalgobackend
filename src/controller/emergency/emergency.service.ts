@@ -4,8 +4,8 @@ import { EmergencyDto } from "./emergency.dto"
 
 @Injectable()
 export class EmergencyService {
-  async triggerEmergency(emergencyDto: EmergencyDto) {
-    const { userId, locationLat, locationLon } = emergencyDto
+  async triggerEmergency(emergencyDto: EmergencyDto, userId: string) {
+    const { locationLat, locationLon } = emergencyDto
 
     // Buscar los grupos del usuario
     const userGroups = await db.groupUser.findMany({
@@ -53,5 +53,18 @@ export class EmergencyService {
       message:
         "Botón de emergencia activado. Alerta enviada a los miembros del grupo."
     }
+  }
+
+  async isUserInEmergency(userId: string) {
+    return Boolean(
+      await db.alert.findFirst({ where: { user_id: userId, status: "activo" } })
+    )
+  }
+
+  async cancelEmergency(userId: string) {
+    await db.alert.updateMany({
+      where: { user_id: userId, status: "activo" },
+      data: { status: "inactivo" }
+    })
   }
 }

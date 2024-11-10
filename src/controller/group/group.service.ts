@@ -50,4 +50,10 @@ export class GroupService {
 
     return group
   }
+
+  async getMyGroups(userId: string) {
+    return await db.group.findMany({
+      where: { groupUsers: { some: { user_id: userId } } }
+    })
+  }
 }
