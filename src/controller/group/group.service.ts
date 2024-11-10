@@ -53,7 +53,12 @@ export class GroupService {
 
   async getMyGroups(userId: string) {
     return await db.group.findMany({
-      where: { groupUsers: { some: { user_id: userId } } }
+      where: { groupUsers: { some: { user_id: userId } } },
+      include: {
+        groupMessage: { take: 1, orderBy: { timestamp: "desc" } },
+        alerts: { take: 1, orderBy: { timestamp: "desc" } },
+        _count: { select: { groupUsers: true } }
+      }
     })
   }
 }
