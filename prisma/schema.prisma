@@ -119,6 +119,7 @@ model News {
   id        String   @id @default(cuid())
   title     String
   content   String
+  image     String
   timestamp DateTime @default(now())
   category  String
 }

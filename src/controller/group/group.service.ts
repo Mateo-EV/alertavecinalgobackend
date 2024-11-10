@@ -61,4 +61,14 @@ export class GroupService {
       }
     })
   }
+
+  async getGroup(groupId: string) {
+    return await db.group.findUnique({
+      where: { id: groupId },
+      include: {
+        groupMessage: { include: { user: true } },
+        groupUsers: { include: { user: true } }
+      }
+    })
+  }
 }

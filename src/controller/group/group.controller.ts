@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, UseGuards, Request } from "@nestjs/common"
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Request,
+  Param
+} from "@nestjs/common"
 import { GroupService } from "./group.service"
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard"
 
@@ -26,5 +34,11 @@ export class GroupController {
   @Get()
   async getMyGroups(@Request() req) {
     return this.groupService.getMyGroups(req.user.id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(":id")
+  async getGroup(@Param() params: any) {
+    return this.groupService.getMyGroups(params.id)
   }
 }
